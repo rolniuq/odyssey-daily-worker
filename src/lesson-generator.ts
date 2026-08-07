@@ -37,7 +37,7 @@ Rules you MUST follow:
 2. Plain language first; the precise term only after an analogy. Aim it at a smart newcomer.
 3. Order: analogy -> precise explanation -> "What this is NOT" (common misconceptions) -> "Why this matters".
 4. Keep the page under ~8000 characters (a 10-minute read).
-5. Small, honest diagrams only. Where a visual belongs, drop a marker like: <!-- DIAGRAM: <what to animate> -->. Never claim you drew one.
+5. Small, honest diagrams only. Where a visual belongs, drop a marker like: {/* DIAGRAM: <what to animate> */}. Never claim you drew one.
 6. Quiz: exactly 3-4 questions, each with exactly 4 options and exactly one correct answerIndex. The explanation field must teach WHY the answer is right, and where useful why a wrong pick fails.
 
 Reply ONLY with a single JSON object. No markdown fences around it, no extra prose. Shape:
@@ -62,7 +62,7 @@ const BODY_REQUIREMENTS = `The "body" is raw MDX markdown. It MUST end with thes
 (common misconceptions — a short table or bullets)
 ## The diagram matters
 (why the concept matters and what it unlocks next)
-Insert <!-- DIAGRAM: ... --> markers where an animated illustration would help.
+Insert {/* DIAGRAM: ... */} markers where an animated illustration would help.
 Do not include the frontmatter in the body.`;
 
 export interface GenerateOptions {
@@ -224,7 +224,7 @@ function mockLesson(item: CurriculumItem): LessonContent {
           'Every OdysseyDB page teaches exactly one concept, deep (Feynman style). The other options violate the one-logic-per-page rule.',
       },
     ],
-    body: `<!-- DIAGRAM: animate the mechanism behind ${item.title} -->
+    body: `{/* DIAGRAM: animate the mechanism behind ${item.title} */}
 
 ## ${item.title}
 

@@ -38,10 +38,7 @@ jobs:
         run: bun install
 
       - name: Clone the Odyssey site repo
-        env:
-          PUSH_TOKEN: ${{ secrets.ODYSSEY_PUSH_TOKEN }}
-        run: |
-          git clone --depth=1 https://github.com/${ODYSSEY_REPO}.git ./odyssey
+        run: git clone --depth=1 https://github.com/${ODYSSEY_REPO}.git ./odyssey
 
       - name: Generate the next lesson
         env:
@@ -63,22 +60,30 @@ jobs:
           bun run build
 
       - name: Push the new lesson to the site repo
+        working-directory: ./odyssey
         env:
           PUSH_TOKEN: ${{ secrets.ODYSSEY_PUSH_TOKEN }}
-        working-directory: ./odyssey
         run: |
+          if [ -z "${PUSH_TOKEN}" ]; then
+            echo "::warning::ODYSSEY_PUSH_TOKEN secret not set — generated lesson kept local (not pushed)."
+            exit 0
+          fi
           git config user.name "odyssey-daily-worker"
           git config user.email "odyssey-daily-worker[bot]@users.noreply.github.com"
           git add src/content/lessons
-          git commit -m "lessons: add next daily concept ($(date -u +%F))" || { echo "nothing new"; exit 0; }
+          git commit -m "feat(lessons): add next daily concept ($(date -u +%F))" || { echo "nothing new"; exit 0; }
           git push "https://x-access-token:${PUSH_TOKEN}@github.com/${ODYSSEY_REPO}.git" HEAD:main
 
       - name: Save progress pointer back to the worker repo
         env:
-          GH_TOKEN: ${{ github.token }}
+          PUSH_TOKEN: ${{ secrets.ODYSSEY_PUSH_TOKEN }}
         run: |
+          if [ -z "${PUSH_TOKEN}" ]; then
+            echo "::warning::Not committing progress.json (no ODYSSEY_PUSH_TOKEN)."
+            exit 0
+          fi
           git config user.name "odyssey-daily-worker"
           git config user.email "odyssey-daily-worker[bot]@users.noreply.github.com"
           git add progress.json
-          git commit -m "worker: advance curriculum to next lesson" || { echo "no progress change"; exit 0; }
-          git push "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:${GITHUB_REF_NAME}
+          git commit -m "chore: advance curriculum to next lesson" || { echo "no progress change"; exit 0; }
+          git push "https://x-access-token:${PUSH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:${GITHUB_REF_NAME}
