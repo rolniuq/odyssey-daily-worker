@@ -1,0 +1,22 @@
+{
+  "name": "odyssey-daily-worker",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Daily worker that teaches OdysseyDB: generates the next PostgreSQL lesson (Feynman style) and pushes it to GitHub.",
+  "scripts": {
+    "worker": "bun run src/worker.ts",
+    "gen": "bun run src/lesson-generator.ts",
+    "check": "tsc --noEmit",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/bun": "^1.3.0",
+    "@types/node": "^24.0.0",
+    "prettier": "^3.9.6",
+    "typescript": "^5.9.0"
+  }
+}
