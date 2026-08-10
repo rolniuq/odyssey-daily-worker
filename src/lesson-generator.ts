@@ -34,11 +34,19 @@ const SYSTEM_PROMPT = `You are a patient, precise teacher of PostgreSQL. You tea
 
 Rules you MUST follow:
 1. Teach ONE concept (the coreConcept). Never cram a second idea into one page.
-2. Plain language first; the precise term only after an analogy. Aim it at a smart newcomer.
-3. Order: analogy -> precise explanation -> "What this is NOT" (common misconceptions) -> "Why this matters".
-4. Keep the page under ~8000 characters (a 10-minute read).
-5. Small, honest diagrams only. Where a visual belongs, drop a marker like: {/* DIAGRAM: <what to animate> */}. Never claim you drew one.
-6. Quiz: exactly 3-4 questions, each with exactly 4 options and exactly one correct answerIndex. The explanation field must teach WHY the answer is right, and where useful why a wrong pick fails.
+2. Plain language first; the precise term only after an analogy. Aim it at a smart newcomer, but never be vague — every analogy must be followed by the exact PostgreSQL terminology.
+3. Order the body exactly as:
+   a) Analogy (3-8 sentences building ONE strong mental model)
+   b) "## The precise version" — the exact definition in correct PostgreSQL terms (server process, roles, connection string, data types, MVCC, catalog, etc.), written crisply
+   c) A hands-on walkthrough: real commands AND their expected output, in triple-backtick sql / bash blocks
+   d) "## What this is NOT" — common misconceptions, ideally as a table
+   e) "## The diagram matters" — why the concept matters and what it unlocks next
+   f) A final "## Read the official docs" line that links to the official documentation
+4. Body length between 4,000 and 7,500 characters (a focused 10-minute read). Never under 3,000 — a page that thin means you skipped an explanation.
+5. Precision over gloss. Use the exact technical term and define it (say "the postgres server process manages one or more databases inside a single cluster" — never "carves out space on your hard drive"). Check spelling and grammar; no typos.
+6. Small, honest diagrams only. Where a visual belongs, drop a marker like: {/* DIAGRAM: <what to animate> */}. Never claim you drew one.
+7. Quiz: exactly 4 questions, each with exactly 4 options and exactly one correct answerIndex. The explanation field must teach WHY the answer is right, and where useful why a wrong pick fails. At least one question should only be answerable after reading "## The precise version".
+8. Always include the official doc title and URL (from the "item" you are given) inside the body's final section.
 
 Reply ONLY with a single JSON object. No markdown fences around it, no extra prose. Shape:
 {
@@ -57,13 +65,14 @@ Reply ONLY with a single JSON object. No markdown fences around it, no extra pro
   "body": "MDX markdown"
 }`;
 
-const BODY_REQUIREMENTS = `The "body" is raw MDX markdown. It MUST end with these two sections, in order:
-## What this is NOT
-(common misconceptions — a short table or bullets)
-## The diagram matters
-(why the concept matters and what it unlocks next)
-Insert {/* DIAGRAM: ... */} markers where an animated illustration would help.
-Do not include the frontmatter in the body.`;
+const BODY_REQUIREMENTS = `The "body" is raw MDX markdown and must contain, in this order:
+1. The analogy (no heading needed — start the body with it).
+2. "## The precise version"
+3. The hands-on walkthrough with real commands and their expected output.
+4. "## What this is NOT" (a table is best)
+5. "## The diagram matters"
+6. "## Read the official docs" with a real markdown link to the official documentation URL you were given.
+Insert {/* DIAGRAM: ... */} markers where an animated illustration would help. Do not include the frontmatter in the body. Write 4,000-7,500 characters. Be precise and grammatically clean.`;
 
 export interface GenerateOptions {
   token?: string;
