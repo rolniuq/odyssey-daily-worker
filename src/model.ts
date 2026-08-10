@@ -2,7 +2,8 @@
  * Tiny model client.
  *
  * Talks to any OpenAI-compatible `/chat/completions` endpoint:
- *  - GitHub Models (default): uses `GITHUB_TOKEN` / `GH_TOKEN`, no extra key.
+ *  - Google Gemini (default): free tier, no credit card. Grab a free key from
+ *    Google AI Studio and set `GEMINI_API_KEY`.
  *  - OpenAI: set `OPENAI_API_KEY` (or point `MODEL_URL` elsewhere).
  *
  * Model name overridable via `MODEL`.
@@ -33,13 +34,15 @@ export function resolveEndpoint(opts: ModelOptions = {}) {
   }
 
   return {
-    url: process.env.MODEL_URL || 'https://models.inference.ai.azure.com/v1/chat/completions',
-    token: opts.token || process.env.GH_TOKEN || process.env.GITHUB_TOKEN || '',
+    url:
+      process.env.MODEL_URL ||
+      'https://generativelanguage.googleapis.com/v1beta/openai/chat/completions',
+    token: opts.token || process.env.GEMINI_API_KEY || '',
   };
 }
 
 export function defaultModel(opts: ModelOptions = {}) {
-  return opts.model || process.env.MODEL || 'gpt-4o-mini';
+  return opts.model || process.env.MODEL || 'gemini-2.5-flash';
 }
 
 /**
@@ -53,7 +56,7 @@ export async function chatComplete(
   const { url, token } = resolveEndpoint(opts);
   if (!token) {
     throw new Error(
-      'No model token available. Set GITHUB_TOKEN / GH_TOKEN (GitHub Models) or OPENAI_API_KEY (OpenAI).'
+      'No model token available. Set GEMINI_API_KEY (Google AI Studio, free) or OPENAI_API_KEY (OpenAI).'
     );
   }
 

@@ -43,10 +43,15 @@ jobs:
       - name: Generate the next lesson
         env:
           ODYSSEY_LESSONS_DIR: ${{ github.workspace }}/odyssey/src/content/lessons
-          # GitHub AI Models — the repo token is enough, no extra secret.
-          GH_TOKEN: ${{ github.token }}
+          # Google Gemini free tier — grab a free key at https://ai.google.dev
+          # and add it as a repo secret named GEMINI_API_KEY (no credit card).
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
           if [ "${{ github.event_name }}" = "schedule" ] || [ "${{ inputs.mode }}" = "real" ]; then
+            if [ -z "${GEMINI_API_KEY}" ]; then
+              echo "::error::GEMINI_API_KEY secret is not set on this repo. Add a free key from https://ai.google.dev (no billing)."
+              exit 1
+            fi
             bun run worker
           else
             bun run worker --mock

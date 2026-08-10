@@ -42,8 +42,8 @@ bun run worker --mock
 # 3) Force a specific lesson
 bun run worker --order 5 --mock
 
-# 4) Real AI-generated lesson (needs a model token)
-bun run worker                    # uses GITHUB_TOKEN / GH_TOKEN (GitHub Models)
+# 4) Real AI-generated lesson (needs a model key)
+bun run worker                    # uses GEMINI_API_KEY (Google, free tier)
 # or
 OPENAI_API_KEY=sk-... bun run worker --order 3
 ```
@@ -53,7 +53,9 @@ Set `ODYSSEY_LESSONS_DIR` to point at the live site if it isn't the sibling
 
 ## Model credentials
 
-- **GitHub AI Models (recommended, no extra key):** set `GH_TOKEN` or `GITHUB_TOKEN`.
+- **Google Gemini (recommended, free):** set `GEMINI_API_KEY`. Grab a free key
+  from [Google AI Studio](https://ai.google.dev) — no credit card, no expiry.
+  Defaults to `gemini-2.5-flash`, which supports JSON mode.
 - **OpenAI:** set `OPENAI_API_KEY`. Uses `gpt-4o-mini` by default.
 - Override endpoint/model with `MODEL_URL` / `MODEL`.
 
@@ -62,10 +64,14 @@ Set `ODYSSEY_LESSONS_DIR` to point at the live site if it isn't the sibling
 `.github/workflows/daily.yml` runs on a cron (default 01:00 UTC) and on `workflow_dispatch`:
 
 1. Checks out this worker repo, installs deps with Bun.
-2. Uses `GH_TOKEN: ${{ github.token }}` to call the model.
+2. Uses `GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}` to call the model.
 3. Clones the site (`rolniuq/odyssey`), generates the lesson there.
 4. Runs the site gates (`bun run check` + `bun run build`); **only pushes if they pass**.
 5. Commits the new lesson and pushes to `main`.
+
+To make the job run for real you need **one free repo secret**: `GEMINI_API_KEY`
+(free from [Google AI Studio](https://ai.google.dev), no billing). Without it the
+job fails fast rather than silently producing canned lessons.
 
 To enable pushing to the site repo from a different workflow, add a repository **secret** named
 `ODYSSEY_PUSH_TOKEN` on **this** worker repo — a PAT or GitHub App token with `Contents: write` on
