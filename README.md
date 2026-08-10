@@ -55,7 +55,7 @@ Set `ODYSSEY_LESSONS_DIR` to point at the live site if it isn't the sibling
 
 - **Google Gemini (recommended, free):** set `GEMINI_API_KEY`. Grab a free key
   from [Google AI Studio](https://ai.google.dev) — no credit card, no expiry.
-  Defaults to `gemini-2.5-flash`, which supports JSON mode.
+  Defaults to `gemini-3.5-flash`, which supports JSON mode.
 - **OpenAI:** set `OPENAI_API_KEY`. Uses `gpt-4o-mini` by default.
 - Override endpoint/model with `MODEL_URL` / `MODEL`.
 

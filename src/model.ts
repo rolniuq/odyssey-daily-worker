@@ -42,7 +42,7 @@ export function resolveEndpoint(opts: ModelOptions = {}) {
 }
 
 export function defaultModel(opts: ModelOptions = {}) {
-  return opts.model || process.env.MODEL || 'gemini-2.5-flash';
+  return opts.model || process.env.MODEL || 'gemini-3.5-flash';
 }
 
 /**
