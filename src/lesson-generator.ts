@@ -45,7 +45,14 @@ Rules you MUST follow:
 4. Body length between 4,000 and 7,500 characters (a focused 10-minute read). Never under 3,000 — a page that thin means you skipped an explanation.
 5. Precision over gloss. Use the exact technical term and define it (say "the postgres server process manages one or more databases inside a single cluster" — never "carves out space on your hard drive"). Check spelling and grammar; no typos.
 6. Small, honest diagrams only. Where a visual belongs, drop a marker like: {/* DIAGRAM: <what to animate> */}. Never claim you drew one.
-7. Quiz: exactly 4 questions, each with exactly 4 options and exactly one correct answerIndex. The explanation field must teach WHY the answer is right, and where useful why a wrong pick fails. At least one question should only be answerable after reading "## The precise version".
+7. Quiz: exactly 6 questions, exactly ONE per body section, in the same order the sections appear in the body:
+   1) the opening analogy,
+   2) "## The precise version",
+   3) the hands-on walkthrough,
+   4) "## What this is NOT",
+   5) "## The diagram matters",
+   6) the "## Read the official docs" section.
+   Each question must check understanding of ITS OWN section only, so it cannot be answered without having read that section. Each has exactly 4 options and exactly one correct answerIndex. The explanation must teach WHY the answer is right, and where useful why a wrong pick fails.
 8. Always include the official doc title and URL (from the "item" you are given) inside the body's final section.
 
 Reply ONLY with a single JSON object. No markdown fences around it, no extra prose. Shape:
@@ -72,7 +79,9 @@ const BODY_REQUIREMENTS = `The "body" is raw MDX markdown and must contain, in t
 4. "## What this is NOT" (a table is best)
 5. "## The diagram matters"
 6. "## Read the official docs" with a real markdown link to the official documentation URL you were given.
-Insert {/* DIAGRAM: ... */} markers where an animated illustration would help. Do not include the frontmatter in the body. Write 4,000-7,500 characters. Be precise and grammatically clean.`;
+Insert {/* DIAGRAM: ... */} markers where an animated illustration would help. Do not include the frontmatter in the body. Write 4,000-7,500 characters. Be precise and grammatically clean.
+
+The "quiz" array MUST contain exactly 6 questions, one per body section, in body order (analogy, precise version, walkthrough, what-this-is-NOT, diagram matters, official docs). The page is meant to be studied slowly — each question forces the reader to re-read one section, so never skip a section in the quiz.`;
 
 export interface GenerateOptions {
   token?: string;
@@ -139,6 +148,11 @@ function parseLesson(raw: string, item: CurriculumItem): LessonContent {
 
   const objectives = toArray(parsed.objectives);
   const quiz = parseQuiz(parsed.quiz);
+  if (quiz.length < 6) {
+    throw new Error(
+      `Model returned ${quiz.length}/6 quiz questions (need one per body section) — retrying.`
+    );
+  }
 
   return {
     order: item.order,
@@ -156,7 +170,7 @@ function parseLesson(raw: string, item: CurriculumItem): LessonContent {
 function parseQuiz(v: unknown): LessonQuizQuestion[] {
   if (!Array.isArray(v)) return [];
   const out: LessonQuizQuestion[] = [];
-  for (const raw of v.slice(0, 4)) {
+  for (const raw of v.slice(0, 6)) {
     const q = raw as Record<string, unknown>;
     if (typeof q?.question !== 'string' || !Array.isArray(q.options)) continue;
     const options = toArray(q.options);
