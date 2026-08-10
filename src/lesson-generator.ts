@@ -148,7 +148,7 @@ function parseQuiz(v: unknown): LessonQuizQuestion[] {
 
 /** Strip a markdown fence if the model wrapped the JSON anyway. */
 function extractJson(raw: string): string {
-  const fence = raw.match(/```(?:json)?\s*([\s\S]*?)```/);
+  const fence = raw.match(/```[\s\S]*?\n([\s\S]*?)```/);
   if (fence) return fence[1].trim();
   return raw.trim();
 }
