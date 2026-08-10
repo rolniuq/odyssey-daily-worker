@@ -1,11 +1,16 @@
 {
-  "nextOrder": 3,
-  "updatedAt": "2026-08-10T03:12:37.715Z",
+  "nextOrder": 4,
+  "updatedAt": "2026-08-10T03:27:56.891Z",
   "history": [
     {
       "order": 2,
       "slug": "client-server-architecture",
       "at": "2026-08-10T03:12:37.715Z"
+    },
+    {
+      "order": 3,
+      "slug": "connecting-with-psql",
+      "at": "2026-08-10T03:27:56.892Z"
     }
   ]
 }
