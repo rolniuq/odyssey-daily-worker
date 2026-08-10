@@ -1,6 +1,6 @@
 {
-  "nextOrder": 4,
-  "updatedAt": "2026-08-10T03:27:56.891Z",
+  "nextOrder": 5,
+  "updatedAt": "2026-08-10T04:07:25.476Z",
   "history": [
     {
       "order": 2,
@@ -11,6 +11,11 @@
       "order": 3,
       "slug": "connecting-with-psql",
       "at": "2026-08-10T03:27:56.892Z"
+    },
+    {
+      "order": 4,
+      "slug": "create-database-and-tables",
+      "at": "2026-08-10T04:07:25.476Z"
     }
   ]
 }
