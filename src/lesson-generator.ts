@@ -146,11 +146,29 @@ function parseQuiz(v: unknown): LessonQuizQuestion[] {
   return out;
 }
 
-/** Strip a markdown fence if the model wrapped the JSON anyway. */
+/**
+ * Strip a markdown fence if the model wrapped the JSON anyway. Skips the
+ * opening fence and its optional language tag (```json, ```bash, ...).
+ */
 function extractJson(raw: string): string {
-  const fence = raw.match(/```[\s\S]*?\n([\s\S]*?)```/);
-  if (fence) return fence[1].trim();
-  return raw.trim();
+  const open = raw.indexOf('```');
+  if (open === -1) return raw.trim();
+
+  const rest = raw.slice(open + 3);
+  const newline = rest.indexOf('\n');
+  const close = rest.indexOf('```');
+
+  if (newline !== -1 && (close === -1 || newline < close)) {
+    const start = newline + 1;
+    const end = rest.indexOf('```', start);
+    return (end === -1 ? rest.slice(start) : rest.slice(start, end)).trim();
+  }
+
+  // Content sits on the same line as the opener (```json {...}): skip the
+  // tag, then take everything up to the closing fence.
+  const body = rest.replace(/^[A-Za-z0-9_-]+\s*/, '');
+  const end = body.indexOf('```');
+  return (end === -1 ? body : body.slice(0, end)).trim();
 }
 
 /** Render a LessonContent as an `.mdx` file. Frontmatter is valid YAML. */
