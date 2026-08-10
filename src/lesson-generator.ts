@@ -7,7 +7,7 @@
  * docTitle, difficulty, objectives, quiz[].
  */
 
-import { chatComplete } from './model.ts';
+import { chatComplete, type ChatMessage } from './model.ts';
 import type { CurriculumItem } from './curriculum.ts';
 
 export interface LessonQuizQuestion {
@@ -69,6 +69,8 @@ export interface GenerateOptions {
   token?: string;
   url?: string;
   model?: string;
+  /** How many times to retry the model when it returns unparseable output. */
+  maxAttempts?: number;
   /** Don't call the model; return a canned lesson (for local dry-runs/tests). */
   mock?: boolean;
 }
@@ -79,27 +81,41 @@ export async function generateLesson(
 ): Promise<LessonContent> {
   if (opts.mock) return mockLesson(item);
 
-  const out = await chatComplete(
-    [
-      { role: 'system', content: SYSTEM_PROMPT },
-      {
-        role: 'user',
-        content: [
-          `Create a lesson from this item:`,
-          `- order: ${item.order}`,
-          `- working title: ${item.title}`,
-          `- official doc title: ${item.docTitle}`,
-          `- official doc URL: ${item.docSource}`,
-          `- planned difficulty: ${item.difficulty}`,
-          '',
-          BODY_REQUIREMENTS,
-        ].join('\n'),
-      },
-    ],
-    { token: opts.token, url: opts.url, model: opts.model }
-  );
+  const messages = [
+    { role: 'system', content: SYSTEM_PROMPT },
+    {
+      role: 'user',
+      content: [
+        `Create a lesson from this item:`,
+        `- order: ${item.order}`,
+        `- working title: ${item.title}`,
+        `- official doc title: ${item.docTitle}`,
+        `- official doc URL: ${item.docSource}`,
+        `- planned difficulty: ${item.difficulty}`,
+        '',
+        BODY_REQUIREMENTS,
+      ].join('\n'),
+    },
+  ] satisfies ChatMessage[];
 
-  return parseLesson(out, item);
+  // Models occasionally mishandle one structured response; retry a few times
+  // before giving up for the day.
+  const attempts = opts.maxAttempts ?? 3;
+  let lastErr: unknown;
+  for (let attempt = 0; attempt < attempts; attempt++) {
+    try {
+      const out = await chatComplete(messages, {
+        token: opts.token,
+        url: opts.url,
+        model: opts.model,
+      });
+      return parseLesson(out, item);
+    } catch (err) {
+      lastErr = err;
+      if (attempt < attempts - 1) await new Promise((r) => setTimeout(r, 1500 * (attempt + 1)));
+    }
+  }
+  throw lastErr;
 }
 
 function parseLesson(raw: string, item: CurriculumItem): LessonContent {
@@ -107,7 +123,9 @@ function parseLesson(raw: string, item: CurriculumItem): LessonContent {
   try {
     parsed = JSON.parse(extractJson(raw)) as Record<string, unknown>;
   } catch (err) {
-    throw new Error(`Could not parse model JSON: ${(err as Error).message}`);
+    throw new Error(
+      `Could not parse model JSON: ${(err as Error).message}. Raw start: ${raw.slice(0, 300)}`
+    );
   }
 
   const objectives = toArray(parsed.objectives);
@@ -147,28 +165,34 @@ function parseQuiz(v: unknown): LessonQuizQuestion[] {
 }
 
 /**
- * Strip a markdown fence if the model wrapped the JSON anyway. Skips the
- * opening fence and its optional language tag (```json, ```bash, ...).
+ * Extract a JSON payload from the model's reply. The lesson body legitimately
+ * contains code fences (```sql), so first try the raw text as-is — only strip
+ * an outer markdown fence when the raw text isn't already valid JSON.
  */
 function extractJson(raw: string): string {
-  const open = raw.indexOf('```');
-  if (open === -1) return raw.trim();
-
-  const rest = raw.slice(open + 3);
-  const newline = rest.indexOf('\n');
-  const close = rest.indexOf('```');
-
-  if (newline !== -1 && (close === -1 || newline < close)) {
-    const start = newline + 1;
-    const end = rest.indexOf('```', start);
-    return (end === -1 ? rest.slice(start) : rest.slice(start, end)).trim();
+  const trimmed = raw.trim();
+  try {
+    JSON.parse(trimmed);
+    return trimmed;
+  } catch {
+    // Not raw JSON — maybe wrapped in a fence.
   }
 
-  // Content sits on the same line as the opener (```json {...}): skip the
-  // tag, then take everything up to the closing fence.
-  const body = rest.replace(/^[A-Za-z0-9_-]+\s*/, '');
-  const end = body.indexOf('```');
-  return (end === -1 ? body : body.slice(0, end)).trim();
+  const open = trimmed.indexOf('```');
+  if (open === -1) return trimmed;
+
+  const rest = trimmed.slice(open + 3);
+  const newline = rest.indexOf('\n');
+  const start = newline === -1 ? open + 3 : open + 3 + newline + 1;
+
+  let body = trimmed.slice(start);
+  // The lesson body may contain its own fences, so the outer fence is the LAST one.
+  const lastClose = trimmed.lastIndexOf('```');
+  if (lastClose !== -1 && lastClose - open > 3) body = body.slice(0, lastClose - start);
+
+  // Content on the opener line starts with a language tag (```bash {...}).
+  if (newline === -1) body = body.replace(/^[A-Za-z0-9_-]+\s*/, '');
+  return body.trim();
 }
 
 /** Render a LessonContent as an `.mdx` file. Frontmatter is valid YAML. */

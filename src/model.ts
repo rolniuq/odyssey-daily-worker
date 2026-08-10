@@ -70,6 +70,9 @@ export async function chatComplete(
       model: defaultModel(opts),
       messages,
       temperature: 0.4,
+      // Lessons are long (MDX body + quiz); keep the ceiling high so the
+      // response isn't truncated mid-JSON.
+      max_tokens: 8192,
       // Request JSON so we can reliably parse the structured lesson.
       response_format: { type: 'json_object' },
     }),
