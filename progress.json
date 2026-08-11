@@ -1,6 +1,6 @@
 {
-  "nextOrder": 5,
-  "updatedAt": "2026-08-10T04:07:25.476Z",
+  "nextOrder": 6,
+  "updatedAt": "2026-08-11T03:04:14.587Z",
   "history": [
     {
       "order": 2,
@@ -16,6 +16,11 @@
       "order": 4,
       "slug": "create-database-and-tables",
       "at": "2026-08-10T04:07:25.476Z"
+    },
+    {
+      "order": 5,
+      "slug": "data-types",
+      "at": "2026-08-11T03:04:14.587Z"
     }
   ]
 }
