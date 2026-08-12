@@ -1,6 +1,6 @@
 {
-  "nextOrder": 6,
-  "updatedAt": "2026-08-11T03:04:14.587Z",
+  "nextOrder": 7,
+  "updatedAt": "2026-08-12T03:23:31.533Z",
   "history": [
     {
       "order": 2,
@@ -21,6 +21,11 @@
       "order": 5,
       "slug": "data-types",
       "at": "2026-08-11T03:04:14.587Z"
+    },
+    {
+      "order": 6,
+      "slug": "select-rows",
+      "at": "2026-08-12T03:23:31.533Z"
     }
   ]
 }
