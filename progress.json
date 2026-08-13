@@ -1,6 +1,6 @@
 {
-  "nextOrder": 7,
-  "updatedAt": "2026-08-12T03:23:31.533Z",
+  "nextOrder": 8,
+  "updatedAt": "2026-08-13T03:26:22.328Z",
   "history": [
     {
       "order": 2,
@@ -26,6 +26,11 @@
       "order": 6,
       "slug": "select-rows",
       "at": "2026-08-12T03:23:31.533Z"
+    },
+    {
+      "order": 7,
+      "slug": "where-and-filtering",
+      "at": "2026-08-13T03:26:22.328Z"
     }
   ]
 }
