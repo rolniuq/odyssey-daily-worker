@@ -73,8 +73,8 @@ jobs:
             echo "::warning::ODYSSEY_PUSH_TOKEN secret not set — generated lesson kept local (not pushed)."
             exit 0
           fi
-          git config user.name "odyssey-daily-worker"
-          git config user.email "odyssey-daily-worker[bot]@users.noreply.github.com"
+          git config user.name "rolniuq"
+          git config user.email "truongquynh2525@gmail.com"
           git add src/content/lessons
           git commit -m "feat(lessons): add next daily concept ($(date -u +%F))" || { echo "nothing new"; exit 0; }
           git push "https://x-access-token:${PUSH_TOKEN}@github.com/${ODYSSEY_REPO}.git" HEAD:main
@@ -87,8 +87,8 @@ jobs:
             echo "::warning::Not committing progress.json (no ODYSSEY_PUSH_TOKEN)."
             exit 0
           fi
-          git config user.name "odyssey-daily-worker"
-          git config user.email "odyssey-daily-worker[bot]@users.noreply.github.com"
+          git config user.name "rolniuq"
+          git config user.email "truongquynh2525@gmail.com"
           git add progress.json
           git commit -m "chore: advance curriculum to next lesson" || { echo "no progress change"; exit 0; }
           git push "https://x-access-token:${PUSH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:${GITHUB_REF_NAME}
