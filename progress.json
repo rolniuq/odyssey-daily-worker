@@ -1,6 +1,6 @@
 {
-  "nextOrder": 9,
-  "updatedAt": "2026-08-14T03:23:55.574Z",
+  "nextOrder": 10,
+  "updatedAt": "2026-08-15T02:15:56.455Z",
   "history": [
     {
       "order": 2,
@@ -36,6 +36,11 @@
       "order": 8,
       "slug": "ordering-and-limiting",
       "at": "2026-08-14T03:23:55.574Z"
+    },
+    {
+      "order": 9,
+      "slug": "joins",
+      "at": "2026-08-15T02:15:56.455Z"
     }
   ]
 }
