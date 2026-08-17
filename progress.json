@@ -1,6 +1,6 @@
 {
-  "nextOrder": 11,
-  "updatedAt": "2026-08-16T02:21:34.227Z",
+  "nextOrder": 12,
+  "updatedAt": "2026-08-17T02:20:04.319Z",
   "history": [
     {
       "order": 2,
@@ -46,6 +46,11 @@
       "order": 10,
       "slug": "group-by-aggregates",
       "at": "2026-08-16T02:21:34.227Z"
+    },
+    {
+      "order": 11,
+      "slug": "transactions",
+      "at": "2026-08-17T02:20:04.319Z"
     }
   ]
 }
