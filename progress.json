@@ -1,6 +1,6 @@
 {
-  "nextOrder": 13,
-  "updatedAt": "2026-08-18T02:15:32.770Z",
+  "nextOrder": 14,
+  "updatedAt": "2026-08-19T02:21:13.655Z",
   "history": [
     {
       "order": 2,
@@ -56,6 +56,11 @@
       "order": 12,
       "slug": "indexes",
       "at": "2026-08-18T02:15:32.770Z"
+    },
+    {
+      "order": 13,
+      "slug": "explain-a-query-plan",
+      "at": "2026-08-19T02:21:13.655Z"
     }
   ]
 }
