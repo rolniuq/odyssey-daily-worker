@@ -1,6 +1,6 @@
 {
-  "nextOrder": 14,
-  "updatedAt": "2026-08-19T02:21:13.655Z",
+  "nextOrder": 15,
+  "updatedAt": "2026-08-20T02:17:16.093Z",
   "history": [
     {
       "order": 2,
@@ -61,6 +61,11 @@
       "order": 13,
       "slug": "explain-a-query-plan",
       "at": "2026-08-19T02:21:13.655Z"
+    },
+    {
+      "order": 14,
+      "slug": "mvcc-isolation",
+      "at": "2026-08-20T02:17:16.093Z"
     }
   ]
 }
