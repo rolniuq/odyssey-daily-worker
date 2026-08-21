@@ -1,6 +1,6 @@
 {
-  "nextOrder": 15,
-  "updatedAt": "2026-08-20T02:17:16.093Z",
+  "nextOrder": 16,
+  "updatedAt": "2026-08-21T02:24:06.452Z",
   "history": [
     {
       "order": 2,
@@ -66,6 +66,11 @@
       "order": 14,
       "slug": "mvcc-isolation",
       "at": "2026-08-20T02:17:16.093Z"
+    },
+    {
+      "order": 15,
+      "slug": "json-documents",
+      "at": "2026-08-21T02:24:06.452Z"
     }
   ]
 }
